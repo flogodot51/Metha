@@ -1,0 +1,168 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Carnet de ronde – Saron Biogaz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#f4f6f2;--cd:#fff;--tx:#1b2a1f;--mu:#667268;--ln:#dde3da;--ac:#1f7a4d;--ok:#1f7a4d;--ano:#c8501b;--nc:#6f767d;--ur:#c0262d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121815;--cd:#1d2620;--tx:#e8efe9;--mu:#9aa89e;--ln:#2e3a32;--ac:#4cc58a;--ok:#2f9e68;--ano:#d9622b;--nc:#7d848b;--ur:#e0484f}}
+:root[data-theme="dark"]{--bg:#121815;--cd:#1d2620;--tx:#e8efe9;--mu:#9aa89e;--ln:#2e3a32;--ac:#4cc58a;--ok:#2f9e68;--ano:#d9622b;--nc:#7d848b;--ur:#e0484f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,Roboto,sans-serif;padding-bottom:84px}
+#app{max-width:640px;margin:0 auto;padding:14px}h1{font-size:22px;margin:6px 0}h2{font-size:17px;margin:18px 0 8px}
+.mu{color:var(--mu);font-size:13px}.card,.post{background:var(--cd);border:1px solid var(--ln);border-radius:14px;padding:12px;margin:10px 0}
+.post{padding:0;overflow:hidden}.post>.card{margin:8px;}
+.ph{width:100%;display:flex;justify-content:space-between;align-items:center;padding:14px;background:none;border:0;color:var(--tx);font-size:16px}
+.pg{background:var(--ln);border-radius:20px;padding:2px 10px;font-size:13px}.pg.ok{background:var(--ok);color:#fff}
+.t{font-weight:600;margin-bottom:4px}.row,.row3{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}.row3 .bt{flex:1}
+button,select,input,textarea{font:inherit;color:var(--tx)}
+.bt,.b2{min-height:48px;padding:8px 10px;border-radius:12px;border:2px solid var(--ln);background:var(--cd);font-weight:600}
+.b2{min-height:40px;font-weight:500;display:inline-flex;align-items:center}
+.bt.on{color:#fff;border-color:transparent}.bt.on.ok,.bt.on.res{background:var(--ok)}.bt.on.ano,.bt.on.worse{background:var(--ano)}.bt.on.nc,.bt.on.still{background:var(--nc)}
+input,textarea,select{width:100%;padding:10px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);margin:4px 0}
+.row select{width:auto;flex:1}label{display:block;font-size:13px;color:var(--mu);margin-top:8px}
+.num{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.num input{width:120px}
+.oa{background:color-mix(in srgb,var(--ano) 15%,transparent);border-radius:10px;padding:8px;margin:6px 0;font-size:14px}
+.wr{color:var(--ur);font-size:13px;font-weight:600}.lk{background:none;border:0;color:var(--ac);font-size:16px;padding:4px 0}
+.hc{display:block;width:100%;text-align:left;margin:8px 0;padding:14px;border-radius:14px;border:1px solid var(--ln);background:var(--cd)}
+.hc b{display:block;font-size:17px}.hc span{font-size:14px;color:var(--mu)}.hc.ok span{color:var(--ok);font-weight:600}.hc.late span{color:var(--ur);font-weight:600}
+img{max-width:100%;border-radius:10px;margin-top:6px}.ch{width:100%;background:var(--cd);border:1px solid var(--ln);border-radius:12px}
+.chip{display:inline-block;border-radius:8px;padding:0 8px;font-size:12px;color:#fff;background:var(--nc)}.chip.ok{background:var(--ok)}.chip.ano{background:var(--ano)}.chip.u2{background:var(--ur)}
+pre{white-space:pre-wrap;background:var(--cd);border:1px solid var(--ln);border-radius:10px;padding:10px;font-size:13px}
+#nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--cd);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px)}
+#nav button{flex:1;border:0;background:none;padding:8px 0;font-size:11px;color:var(--mu)}#nav button.on{color:var(--ac);font-weight:700}#nav i{display:block;font-style:normal;font-size:20px}
+.ov{position:fixed;inset:0;background:#0007;z-index:20;display:flex;align-items:flex-end}.md{background:var(--bg);width:100%;max-height:92%;overflow:auto;padding:16px;border-radius:18px 18px 0 0}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:20px;font-size:14px;display:none;z-index:30;max-width:90%}
+</style></head><body><div id="app"></div><nav id="nav"></nav><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),app=$('#app'),K='ronde.v1';
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const iso=d=>{d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const uid=()=>Math.random().toString(36).slice(2,9),fd=s=>s.split('-').reverse().join('/');
+const FL={d:'Quotidienne',w:'Hebdomadaire',m:'Mensuelle'},PR=['À surveiller','À programmer','Urgent'],TY={ok:'Conforme / anomalie',num:'Valeur chiffrée',text:'Texte',photo:'Photo'};
+const JR=['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+let S,R=null,V={v:'home',open:new Set(),edit:null,hid:'',rep:null,closed:false,nn:'',bk:''};
+function seed(){const c=[],P=[];let o=0;
+ const G=(p,l)=>{P.push(p);l.forEach(([name,type,freq,unit,cons])=>c.push({id:uid(),post:p,name,type:type||'ok',freq:freq||'d',unit:unit||'',min:'',max:'',instr:'',on:true,o:o++,cons}))};
+ G('Vue générale du site',[['Fuites et écoulements visibles'],['Odeurs inhabituelles'],['Accès dégagés et propreté'],['Équipements de sécurité : état apparent','ok','w'],['Tour approfondi : corrosion, fixations, joints','ok','m']]);
+ [1,2,3].forEach(i=>G('Préfosse '+i,[['Niveau','num','d','m'],['Croûte ou mousse visible'],['Pompes et agitateurs : état apparent'],['Fuites','ok','w']]));
+ G('Incorporateurs A et B',[['Bourrage'],['Bruit inhabituel'],['Fuite'],['Propreté et état apparent'],['Usure visible','ok','w']]);
+ G('Dilution',[['Fonctionnement'],['Fuite'],['Brassage et transfert']]);
+ [1,2].forEach(i=>G('Digesteur '+i,[['Alarmes affichées'],['Agitation'],['Chauffage'],['Mousse ou niveau inhabituel'],['Température','num','d','°C'],['Pression','num','d','mbar'],['Niveau','num','d','%'],['État apparent des membranes','ok','w']]));
+ G('Postdigesteur',[['Alarmes affichées'],['Agitation'],['Niveau','num','d','%'],['État apparent de la couverture'],['Température','num','d','°C']]);
+ G('Épuration et injection',[['En marche'],['Alarmes affichées'],['Arrêt d’injection et motif affiché']]);
+ [1,2].forEach(i=>G('Stockage '+i,[['Niveau','num','d','%'],['Marge disponible'],['Fuite et état apparent']]));
+ G('Fin de ronde',[['Actions effectuées','text'],['Consignes pour le prochain passage','text','d','',1]]);
+ return{op:'',cfg:{wd:1,md:1},posts:P,checks:c,rounds:{},anos:[],notes:[]}}
+try{S=JSON.parse(localStorage.getItem(K))}catch(e){}if(!S)S=seed();
+function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){toast('Stockage plein : supprimez des photos')}}
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',2600)}
+const chk=id=>S.checks.find(c=>c.id==id),snap=id=>{const c=chk(id);return{n:c.name,u:c.unit,p:c.post,ty:c.type}};
+const checksFor=f=>S.checks.filter(c=>c.on&&c.freq==f).sort((a,b)=>a.o-b.o);
+const ans=(c,r)=>c.type=='text'?!!(r&&r.c):!!(r&&r.s);
+const out=(c,v)=>v!==''&&((c.min!==''&&+v<+c.min)||(c.max!==''&&+v>+c.max));
+function pstart(f){const t=new Date();t.setHours(12);if(f=='w')t.setDate(t.getDate()-(t.getDay()-S.cfg.wd+7)%7);if(f=='m'){const m=S.cfg.md;if(t.getDate()<m)t.setMonth(t.getMonth()-1,m);else t.setDate(m)}return iso(t)}
+const rnd=f=>S.rounds[f+'|'+pstart(f)];
+function prevVal(id){const l=Object.values(S.rounds).filter(r=>r!==R&&r.res[id]&&r.res[id].v!==undefined&&r.res[id].v!=='').sort((a,b)=>b.date.localeCompare(a.date));return l[0]?{v:l[0].res[id].v,d:l[0].date}:null}
+function openR(f){const k=f+'|'+pstart(f);R=S.rounds[k]||(S.rounds[k]={k,f,start:pstart(f),date:iso(),op:S.op,res:{},done:false});if(!R.done)R.op=S.op||R.op;V.v='round';V.warn=0;const cs=checksFor(f);const first=cs.find(c=>!ans(c,R.res[c.id]));V.open=new Set(first?[first.post]:[])}
+function home(){const nb=S.notes.filter(n=>n.on),oa=S.anos.filter(a=>a.st=='open'),ur=oa.filter(a=>a.prio==2).length;
+ let h=`<h1>Saron Biogaz</h1><p class=mu>${JR[new Date().getDay()]} ${fd(iso())}</p>`;
+ if(!S.op)h+=`<div class=card><label>Votre nom (opérateur)</label><input data-g=op placeholder="Prénom Nom"></div>`;
+ if(nb.length)h+=`<div class=card><div class=t>📌 Consignes en cours (${nb.length})</div>${nb.slice(0,3).map(n=>`<div>• ${esc(n.t)}</div>`).join('')}<button class=lk data-a=go data-id=notes>Tout voir</button></div>`;
+ ['d','w','m'].forEach(f=>{const r=rnd(f),cs=checksFor(f),n=r?cs.filter(c=>ans(c,r.res[c.id])).length:0,late=f!='d'&&pstart(f)<iso();let s='À faire',k='';
+  if(r&&r.done){s='Terminée ✓';k='ok'}else if(r&&n)s=`En cours · ${n}/${cs.length}`;else if(late){s='En retard depuis le '+fd(pstart(f));k='late'}else if(f!='d')s='À faire aujourd’hui';
+  h+=`<button class="hc ${k}" data-a=open data-id=${f}><b>${f=='d'?'Ronde du jour':FL[f]+' à faire'}</b><span>${s} · ${cs.length} contrôles</span></button>`});
+ return h+`<button class="hc ${ur?'late':''}" data-a=go data-id=anos><b>Anomalies ouvertes : ${oa.length}</b><span>${ur?ur+' urgente(s)':'Aucune urgence'}</span></button>`}
+function card(c){const r=R.res[c.id]||{},id=c.id,oa=S.anos.find(a=>a.cid==id&&a.st=='open');
+ let h=`<div class=card><div class=t>${esc(c.name)}</div>`+(c.instr?`<div class=mu>${esc(c.instr)}</div>`:'');
+ if(c.type=='text')return h+`<textarea data-f=c data-id=${id} placeholder="Saisir…">${esc(r.c)}</textarea></div>`;
+ if(oa){h+=`<div class=oa><b>Anomalie ouverte</b> depuis le ${fd(oa.date)} · ${PR[oa.prio]}<br>${esc(oa.c)}</div><div class=row3>`+[['still','Toujours présente'],['worse','Aggravée'],['res','Résolue']].map(([k,l])=>`<button class="bt ${r.f==k?'on '+k:''}" data-a=fu data-id=${id} data-v=${k}>${l}</button>`).join('')+'</div>';
+  return h+(r.f?`<textarea data-f=c data-id=${id} placeholder="Commentaire (facultatif)">${esc(r.c)}</textarea>`:'')+'</div>'}
+ if(c.type=='num'){const p=prevVal(id);h+=`<div class=num><input type=number inputmode=decimal step=any data-f=v data-id=${id} value="${esc(r.v)}" placeholder="Valeur"><b>${esc(c.unit)}</b><span class=mu>${p?'Préc. : '+esc(p.v)+' '+esc(c.unit)+' ('+fd(p.d)+')':''}</span></div>`;
+  if(c.min!==''||c.max!=='')h+=`<div class=mu>Seuils : ${c.min!==''?'min '+c.min:''} ${c.max!==''?'max '+c.max:''}</div>`;
+  if(out(c,r.v??''))h+=`<div class=wr>⚠ Hors seuil</div>`}
+ h+='<div class=row3>'+[['ok','Conforme'],['ano','Anomalie'],['nc','Non contrôlé']].map(([k,l])=>`<button class="bt ${r.s==k?'on '+k:''}" data-a=st data-id=${id} data-v=${k}>${l}</button>`).join('')+'</div>';
+ const ph=`<label class=b2>📷 Photo<input type=file accept="image/*" capture=environment hidden data-a=ph data-id=${id}></label>`;
+ if(r.s=='ano')h+=`<textarea data-f=c data-id=${id} placeholder="Décrire l’anomalie">${esc(r.c)}</textarea><div class=row><button class=b2 data-a=mic data-id=${id}>🎤 Dicter</button>${ph}<select data-f=prio data-id=${id}>${PR.map((x,i)=>`<option value=${i} ${(r.prio??1)==i?'selected':''}>${x}</option>`).join('')}</select></div>`;
+ if(r.s=='nc')h+=`<input data-f=reason data-id=${id} placeholder="Motif (accès impossible, arrêt…)" value="${esc(r.reason)}">`;
+ if(c.type=='photo'&&r.s!='ano')h+=`<div class=row>${ph}</div>`;
+ return h+(r.ph?`<img src="${r.ph}">`:'')+'</div>'}
+function round(){if(R.done)return summary();const f=R.f,cs=checksFor(f),posts=S.posts.filter(p=>cs.some(c=>c.post==p));
+ let h=`<button class=lk data-a=home>← Accueil</button><h1>Ronde ${FL[f].toLowerCase()}</h1><p class=mu>${fd(R.date)} · ${esc(S.op||'opérateur non renseigné')}</p>`;
+ posts.forEach(p=>{const l=cs.filter(c=>c.post==p),n=l.filter(c=>ans(c,R.res[c.id])).length;
+  h+=`<section class=post><button class=ph data-a=tp data-id="${esc(p)}"><b>${esc(p)}</b><span class="pg ${n==l.length?'ok':''}">${n}/${l.length}</span></button>`;
+  if(V.open.has(p))h+=l.map(card).join('')+`<div class=row style="padding:0 8px 8px"><button class=b2 data-a=allok data-id="${esc(p)}">Tout conforme</button><button class=b2 data-a=new data-id="${esc(p)}">+ Contrôle</button></div>`;
+  h+='</section>'});
+ const un=cs.filter(c=>!ans(c,R.res[c.id])).length;
+ return h+(V.warn&&un?`<p class=wr>${un} contrôle(s) non renseigné(s) seront marqués « Non contrôlé ». Appuyez à nouveau pour terminer.</p>`:'')+`<button class="bt on ok" style="width:100%" data-a=finish>Terminer la ronde (${cs.length-un}/${cs.length})</button>`}
+function summary(){const L=Object.values(R.res),g=s=>L.filter(x=>x.s==s).length;
+ return `<button class=lk data-a=home>← Accueil</button><h1>Ronde terminée ✓</h1><p class=mu>${FL[R.f]} · ${fd(R.date)} · ${esc(R.op)}</p><div class=card>✅ Conformes : ${g('ok')}<br>⚠ Anomalies : ${g('ano')}<br>🔁 Suivis : ${g('fu')}<br>⏸ Non contrôlés : ${g('nc')}</div><button class="bt" style="width:100%" data-a=rep data-id="${esc(R.k)}">Voir / copier le compte rendu</button>`+(V.rep==R.k?repView():'')}
+function repText(r){const L=Object.values(r.res),g=s=>L.filter(x=>x.s==s),ln=x=>`- ${x.p} › ${x.n}`;
+ return `COMPTE RENDU RONDE ${FL[r.f].toUpperCase()}\nDate : ${fd(r.date)} · Opérateur : ${r.op||'-'}\nConformes : ${g('ok').length} · Anomalies : ${g('ano').length} · Suivis : ${g('fu').length} · Non contrôlés : ${g('nc').length}\n`+
+ (g('ano').length?'\nANOMALIES\n'+g('ano').map(x=>ln(x)+' ['+PR[x.prio??1]+'] '+(x.c||'')).join('\n')+'\n':'')+(g('fu').length?'\nSUIVI\n'+g('fu').map(x=>ln(x)+' : '+{still:'toujours présente',worse:'aggravée',res:'résolue'}[x.f]).join('\n')+'\n':'')+
+ (g('nc').length?'\nNON CONTRÔLÉS\n'+g('nc').map(x=>ln(x)+' ('+(x.reason||'-')+')').join('\n')+'\n':'')+'\nRELEVÉS\n'+L.filter(x=>x.v!==undefined&&x.v!=='').map(x=>`${x.p} › ${x.n} : ${x.v} ${x.u||''}`).join('\n')+'\n'+L.filter(x=>x.ty=='text'&&x.c).map(x=>'\n'+x.n.toUpperCase()+' : '+x.c).join('')}
+function repView(){const t=repText(S.rounds[V.rep]);return `<pre>${esc(t)}</pre><button class=b2 data-a=cpy>Copier le texte</button>`}
+function chart(p){p=p.slice(-30);if(p.length<2)return'';const W=320,H=110,v=p.map(x=>x.v),mn=Math.min(...v),mx=Math.max(...v),sp=(mx-mn)||1,X=i=>10+i*(W-20)/(p.length-1),Y=y=>H-14-(y-mn)/sp*(H-30);
+ return `<svg viewBox="0 0 ${W} ${H}" class=ch><polyline fill=none stroke="var(--ac)" stroke-width=2 points="${p.map((q,i)=>X(i)+','+Y(q.v)).join(' ')}"/>${p.map((q,i)=>`<circle cx=${X(i)} cy=${Y(q.v)} r=3 fill="var(--ac)"/>`).join('')}<text x=4 y=10 font-size=10 fill="var(--mu)">max ${mx}</text><text x=4 y=${H-2} font-size=10 fill="var(--mu)">min ${mn}</text></svg>`}
+function hist(){const rs=Object.values(S.rounds).filter(r=>Object.keys(r.res).length).sort((a,b)=>b.date.localeCompare(a.date));
+ let h=`<h1>Historique</h1><label>Équipement / contrôle</label><select data-g=hid><option value="">— choisir —</option>${S.posts.map(p=>`<optgroup label="${esc(p)}">${S.checks.filter(c=>c.post==p).map(c=>`<option value=${c.id} ${V.hid==c.id?'selected':''}>${esc(c.name)} (${FL[c.freq][0]})</option>`).join('')}</optgroup>`).join('')}</select>`;
+ if(V.hid){const l=rs.map(r=>({d:r.date,x:r.res[V.hid]})).filter(z=>z.x&&(z.x.s||z.x.c));
+  h+=chart(l.filter(z=>z.x.v!==undefined&&z.x.v!==''&&!isNaN(z.x.v)).reverse().map(z=>({v:+z.x.v})));
+  h+=l.slice(0,40).map(z=>`<div class=card><b>${fd(z.d)}</b> <span class="chip ${z.x.s=='ok'?'ok':z.x.s=='ano'?'ano':''}">${{ok:'Conforme',ano:'Anomalie',nc:'Non contrôlé',fu:'Suivi'}[z.x.s]||'Note'}</span>${z.x.v?` · <b>${esc(z.x.v)} ${esc(z.x.u)}</b>`:''}<div class=mu>${esc(z.x.c||z.x.reason||'')}</div>${z.x.ph?`<img src="${z.x.ph}">`:''}</div>`).join('')||'<p class=mu>Aucun relevé.</p>'}
+ h+='<h2>Rondes enregistrées</h2>'+(rs.map(r=>`<button class=hc data-a=rep data-id="${esc(r.k)}"><b>${FL[r.f]} · ${fd(r.date)}</b><span>${esc(r.op)} · ${r.done?'terminée':'en cours'}</span></button>`+(V.rep==r.k?repView():'')).join('')||'<p class=mu>Aucune ronde.</p>');return h}
+function anos(){const o=S.anos.filter(a=>a.st=='open').sort((a,b)=>b.prio-a.prio),cl=S.anos.filter(a=>a.st!='open').slice(-20).reverse();
+ const row=a=>`<div class=card><div class=t>${esc(a.post)} › ${esc(a.name)} <span class="chip ${a.prio==2?'u2':'ano'}">${PR[a.prio]}</span></div><div class=mu>Depuis le ${fd(a.date)}</div><div>${esc(a.c)}</div>${a.ph?`<img src="${a.ph}">`:''}<div class=mu>${a.log.map(l=>fd(l.d)+' : '+esc(l.t)).join('<br>')}</div>`+(a.st=='open'?`<input data-g=resp data-id=${a.id} placeholder="Responsable" value="${esc(a.resp)}"><input data-g=action data-id=${a.id} placeholder="Action prévue" value="${esc(a.action)}"><select data-g=prio data-id=${a.id}>${PR.map((x,i)=>`<option value=${i} ${a.prio==i?'selected':''}>${x}</option>`).join('')}</select><input data-g=cc data-id=${a.id} placeholder="Commentaire de clôture" value="${esc(a.cc)}"><button class="bt on ok" style="width:100%" data-a=close data-id=${a.id}>Clôturer</button>`:`<div class=mu>Clôturée le ${fd(a.end)} ${esc(a.cc)}</div>`)+'</div>';
+ return `<h1>Anomalies ouvertes</h1>`+(o.map(row).join('')||'<p class=mu>Aucune anomalie ouverte 👍</p>')+`<button class=lk data-a=tcl>${V.closed?'Masquer':'Voir'} les clôturées</button>`+(V.closed?cl.map(row).join(''):'')}
+function notes(){return `<h1>Cahier de consignes</h1><textarea data-g=nn placeholder="Nouvelle consigne pour les autres opérateurs">${esc(V.nn)}</textarea><button class="bt on ok" style="width:100%" data-a=addn>Ajouter</button>`+S.notes.filter(n=>n.on).reverse().map(n=>`<div class=card>${esc(n.t)}<div class=mu>${fd(n.d)} · ${esc(n.op)}</div><button class=b2 data-a=rmn data-id=${n.id}>Retirer</button></div>`).join('')}
+function cfg(){let h=`<h1>Réglages</h1><label>Opérateur</label><input data-g=op value="${esc(S.op)}"><label>Échéance hebdomadaire</label><select data-g=wd>${JR.map((j,i)=>`<option value=${i} ${S.cfg.wd==i?'selected':''}>${j}</option>`).join('')}</select><label>Échéance mensuelle (jour du mois, 1 à 28)</label><input type=number data-g=md value=${S.cfg.md}><h2>Points de contrôle</h2><button class="bt on ok" style="width:100%" data-a=new>+ Ajouter un contrôle</button>`;
+ S.posts.forEach(p=>{h+=`<h2>${esc(p)}</h2>`+S.checks.filter(c=>c.post==p).sort((a,b)=>a.o-b.o).map(c=>`<div class=card style="${c.on?'':'opacity:.5'}"><div class=t>${esc(c.name)}</div><div class=mu>${FL[c.freq]} · ${TY[c.type]}${c.unit?' · '+esc(c.unit):''}</div><div class=row><button class=b2 data-a=mv data-id=${c.id} data-v=-1>↑</button><button class=b2 data-a=mv data-id=${c.id} data-v=1>↓</button><button class=b2 data-a=edit data-id=${c.id}>Modifier</button><button class=b2 data-a=tog data-id=${c.id}>${c.on?'Désactiver':'Réactiver'}</button></div></div>`).join('')});
+ return h+`<h2>Sauvegarde</h2><div class=row><button class=b2 data-a=exp>Exporter</button><button class=b2 data-a=imp>Importer</button></div><textarea data-g=bk rows=4 placeholder="Sauvegarde JSON">${esc(V.bk)}</textarea>`}
+function editor(){const e=V.edit,i=(k,l,t='text',x='')=>`<label>${l}<input ${x} type=${t} data-e=${k} value="${esc(e[k])}"></label>`,op=(o,s)=>Object.entries(o).map(([k,l])=>`<option value=${k} ${k==s?'selected':''}>${l}</option>`).join('');
+ return `<div class=ov><div class=md><h2>${e.id?'Modifier':'Nouveau'} contrôle</h2>${i('name','Nom')}<label>Poste<input list=pl data-e=post value="${esc(e.post)}"></label><datalist id=pl>${S.posts.map(p=>`<option value="${esc(p)}">`).join('')}</datalist><label>Fréquence<select data-e=freq>${op(FL,e.freq)}</select></label><label>Type de réponse<select data-e=type>${op(TY,e.type)}</select></label>${i('unit','Unité')}${i('min','Seuil min','number','step=any')}${i('max','Seuil max','number','step=any')}${i('instr','Consigne')}<div class=row><button class=bt data-a=ecancel>Annuler</button><button class="bt on ok" data-a=esave>Enregistrer</button></div></div></div>`}
+function render(){const y=scrollY;app.innerHTML=({home,round,anos,hist,notes,cfg})[V.v]()+(V.edit?editor():'');
+ const n=S.anos.filter(a=>a.st=='open').length;$('#nav').innerHTML=[['home','🏠','Accueil'],['anos','⚠️','Anomalies'+(n?' ('+n+')':'')],['hist','📈','Historique'],['notes','📌','Consignes'],['cfg','⚙️','Réglages']].map(([k,i,l])=>`<button data-a=${k=='home'?'home':'go'} data-id=${k} class="${V.v==k||(k=='home'&&V.v=='round')?'on':''}"><i>${i}</i>${l}</button>`).join('');scrollTo(0,y)}
+function photo(file,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,600/im.width),cv=document.createElement('canvas');cv.width=im.width*k;cv.height=im.height*k;cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);cb(cv.toDataURL('image/jpeg',.6))};im.src=r.result};r.readAsDataURL(file)}
+function mic(id){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast('Dictée indisponible : utilisez le micro du clavier');const r=new SR();r.lang='fr-FR';r.onresult=e=>{const x=R.res[id]=R.res[id]||snap(id);x.c=(x.c?x.c+' ':'')+e.results[0][0].transcript;save();render()};r.onerror=()=>toast('Dictée impossible');r.start();toast('Parlez…')}
+function finish(){const cs=checksFor(R.f),un=cs.filter(c=>!ans(c,R.res[c.id]));
+ if(un.length&&!V.warn){V.warn=1;return}
+ un.forEach(c=>{if(c.type!='text'){const r=R.res[c.id]=R.res[c.id]||snap(c.id);r.s='nc';r.reason='Non renseigné'}});
+ cs.forEach(c=>{const r=R.res[c.id];if(!r)return;
+  if(r.s=='ano'&&!r.aid){const a={id:uid(),cid:c.id,post:c.post,name:c.name,date:R.date,c:r.c||'',prio:r.prio??1,ph:r.ph||'',st:'open',resp:'',action:'',log:[{d:R.date,t:'Signalée'}]};S.anos.push(a);r.aid=a.id}
+  if(r.s=='fu'){const a=S.anos.find(x=>x.cid==c.id&&x.st=='open');if(a){a.log.push({d:R.date,t:{still:'Toujours présente',worse:'Aggravée',res:'Résolue'}[r.f]+(r.c?' — '+r.c:'')});if(r.f=='worse')a.prio=Math.min(2,a.prio+1);if(r.f=='res'){a.st='closed';a.end=R.date}}}
+  if(c.cons&&r.c&&r.c.trim())S.notes.push({id:uid(),t:r.c.trim(),d:R.date,op:S.op,on:true})});
+ R.done=true;V.warn=0}
+app.onclick=e=>{const b=e.target.closest('[data-a]');if(!b||b.type=='file')return;const a=b.dataset.a,id=b.dataset.id,v=b.dataset.v;
+ switch(a){
+ case'home':V.v='home';R=null;break;
+ case'go':V.v=id;break;
+ case'open':openR(id);break;
+ case'tp':V.open.has(id)?V.open.delete(id):V.open.add(id);break;
+ case'st':{const r=R.res[id]=R.res[id]||snap(id);r.s=r.s==v?undefined:v;break}
+ case'fu':{const r=R.res[id]=R.res[id]||snap(id);r.s='fu';r.f=v;break}
+ case'allok':checksFor(R.f).filter(c=>c.post==id&&c.type!='num'&&c.type!='text'&&!R.res[c.id]?.s&&!S.anos.some(x=>x.cid==c.id&&x.st=='open')).forEach(c=>{R.res[c.id]=Object.assign(snap(c.id),{s:'ok'})});break;
+ case'mic':mic(id);return;
+ case'finish':finish();break;
+ case'rep':V.rep=V.rep==id?null:id;break;
+ case'cpy':{const t=repText(S.rounds[V.rep]);try{navigator.clipboard.writeText(t).then(()=>toast('Copié'),()=>toast('Sélectionnez le texte pour le copier'))}catch(x){toast('Sélectionnez le texte pour le copier')}return}
+ case'close':{const x=S.anos.find(z=>z.id==id);x.st='closed';x.end=iso();x.log.push({d:iso(),t:'Clôturée'+(x.cc?' — '+x.cc:'')});break}
+ case'tcl':V.closed=!V.closed;break;
+ case'addn':if(V.nn.trim()){S.notes.push({id:uid(),t:V.nn.trim(),d:iso(),op:S.op,on:true});V.nn=''}break;
+ case'rmn':S.notes.find(n=>n.id==id).on=false;break;
+ case'new':V.edit={id:null,post:id||S.posts[0]||'',name:'',type:'ok',freq:R&&V.v=='round'?R.f:'d',unit:'',min:'',max:'',instr:'',on:true};break;
+ case'edit':V.edit={...chk(id)};break;
+ case'tog':{const c=chk(id);c.on=!c.on;break}
+ case'mv':{const l=S.checks.filter(c=>c.post==chk(id).post).sort((a,b)=>a.o-b.o),i=l.findIndex(c=>c.id==id),j=i+ +v;if(l[j]){const t=l[i].o;l[i].o=l[j].o;l[j].o=t}break}
+ case'ecancel':V.edit=null;break;
+ case'esave':{const x=V.edit;x.name=x.name.trim();x.post=x.post.trim();if(!x.name||!x.post){toast('Nom et poste requis');return}
+  if(!S.posts.includes(x.post))S.posts.push(x.post);
+  if(x.id)Object.assign(chk(x.id),x);else S.checks.push({...x,id:uid(),o:Math.max(0,...S.checks.map(c=>c.o))+1});V.edit=null;break}
+ case'exp':V.bk=JSON.stringify(S);break;
+ case'imp':try{const d=JSON.parse(V.bk);if(!d.checks||!d.rounds)throw 0;S=d;V.bk='';toast('Sauvegarde restaurée')}catch(x){toast('JSON invalide');return}break;
+ }save();render()};
+app.oninput=app.onchange=e=>{const t=e.target,d=t.dataset;
+ if(d.a=='ph'&&t.files&&t.files[0])photo(t.files[0],u=>{const r=R.res[d.id]=R.res[d.id]||snap(d.id);r.ph=u;save();render()});
+ if(d.e){V.edit[d.e]=t.value;return}
+ if(d.f){const r=R.res[d.id]=R.res[d.id]||snap(d.id);if(d.f=='prio')r.prio=+t.value;else{r[d.f]=t.value;if(d.f=='v'&&!r.s&&t.value!==''&&!out(chk(d.id),t.value))r.s='ok'}save();return}
+ if(d.g){const g=d.g;
+  if(g=='op')S.op=t.value;else if(g=='wd')S.cfg.wd=+t.value;else if(g=='md')S.cfg.md=Math.min(28,Math.max(1,+t.value||1));
+  else if(g=='nn')V.nn=t.value;else if(g=='bk')V.bk=t.value;else if(g=='hid'){V.hid=t.value;render();return}
+  else{const a=S.anos.find(x=>x.id==d.id);if(a)a[g]=g=='prio'?+t.value:t.value}save()}};
+render();
+</script></body></html>

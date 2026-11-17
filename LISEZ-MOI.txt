@@ -1,0 +1,11 @@
+COMPILER L'APK SUR GITHUB (sans ordinateur)
+1. Créer un dépôt GitHub (privé conseillé).
+2. Y ajouter : package.json, capacitor.config.json, .gitignore,
+   www/index.html et .github/workflows/build.yml (même arborescence).
+   Sur mobile : "Add file > Create new file", taper le chemin complet
+   (ex. .github/workflows/build.yml) et coller le contenu.
+3. Onglet Actions > "Build APK" > Run workflow (ou push sur main).
+4. Après ~5 min : ouvrir l'exécution, section Artifacts,
+   télécharger carnet-de-ronde-apk (zip contenant app-debug.apk).
+5. Dézipper, installer l'APK (autoriser les sources inconnues).
+Mise à jour de l'app : modifier www/index.html, l'APK se recompile.
